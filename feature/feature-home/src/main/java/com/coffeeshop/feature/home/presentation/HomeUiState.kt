@@ -5,6 +5,7 @@ import com.coffeeshop.core.domain.model.Product
 
 data class HomeUiState(
     val isLoading: Boolean = false,
+    val userLocation: String = "Detecting location...",
     val banners: List<Banner> = emptyList(),
     val products: List<Product> = emptyList(),
     val categories: List<String> = listOf("All Coffee", "Machiato", "Latte", "Americano"),

@@ -45,4 +45,5 @@ dependencies {
     implementation(libs.compose.ui.text.google.fonts)
     implementation(libs.coil.compose)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.activity.compose)
 }

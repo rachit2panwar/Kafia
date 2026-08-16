@@ -3,6 +3,7 @@ package com.coffeeshop.feature.home.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coffeeshop.core.domain.util.NetworkResult
+import com.coffeeshop.core.location.LocationService
 import com.coffeeshop.feature.home.domain.usecase.GetBannersUseCase
 import com.coffeeshop.feature.home.domain.usecase.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getProductsUseCase: GetProductsUseCase,
-    private val getBannersUseCase: GetBannersUseCase
+    private val getBannersUseCase: GetBannersUseCase,
+    private val locationService: LocationService
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -24,6 +26,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadData()
+        loadUserLocation()
     }
 
     fun onEvent(event: HomeUiEvent) {
@@ -34,12 +37,29 @@ class HomeViewModel @Inject constructor(
             }
             is HomeUiEvent.ProductClicked -> { /* Handled by navigation */ }
             HomeUiEvent.Refresh -> loadData()
+            HomeUiEvent.LocationPermissionGranted -> loadUserLocation()
         }
     }
 
     private fun loadData() {
         loadBanners()
         loadProducts(_uiState.value.selectedCategory)
+    }
+
+    private fun loadUserLocation() {
+        viewModelScope.launch {
+            locationService.getCurrentLocation().collect { userLocation ->
+                if (userLocation != null) {
+                    _uiState.update { 
+                        it.copy(userLocation = userLocation.address)
+                    }
+                } else {
+                    _uiState.update { 
+                        it.copy(userLocation = "Location unavailable")
+                    }
+                }
+            }
+        }
     }
 
     private fun loadBanners() {

@@ -31,6 +31,7 @@ include(":core:core-ui")
 include(":core:core-network")
 include(":core:core-data")
 include(":core:core-domain")
+include(":core:core-location")
 
 // Feature modules
 include(":feature:feature-auth")

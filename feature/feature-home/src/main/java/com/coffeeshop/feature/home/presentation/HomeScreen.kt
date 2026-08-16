@@ -1,5 +1,6 @@
 package com.coffeeshop.feature.home.presentation
 
+import android.Manifest
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -17,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.coffeeshop.core.ui.components.card.ProductCard
 import com.coffeeshop.core.ui.components.card.ProductCardSkeleton
 import com.coffeeshop.core.ui.components.input.SearchBar
+import com.coffeeshop.core.ui.components.permission.PermissionHandler
 import com.coffeeshop.core.ui.theme.spacing
 import com.coffeeshop.core.ui.preview.PreviewWrapper
 import com.coffeeshop.feature.home.presentation.components.BannerCarousel
@@ -30,6 +32,22 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // Auto-request permission on first launch of Home
+    var triggerPermission by remember { mutableStateOf(true) }
+
+    PermissionHandler(
+        permission = Manifest.permission.ACCESS_FINE_LOCATION,
+        onPermissionGranted = {
+            viewModel.onEvent(HomeUiEvent.LocationPermissionGranted)
+            triggerPermission = false
+        },
+        onPermissionDenied = {
+            triggerPermission = false
+        },
+        trigger = triggerPermission
+    )
+
     HomeScreenContent(
         uiState = uiState,
         onProductClick = onProductClick,
@@ -70,12 +88,13 @@ fun HomeScreenContent(
             ) {
                 Text(
                     text = "Location",
-                    color = Color(0xFFB7B7B7),
+                    color = MaterialTheme.colorScheme.outline,
                     style = MaterialTheme.typography.bodySmall
                 )
+                Spacer(modifier = Modifier.height(spacing.xs))
                 Text(
-                    text = "Bilzen, Tanjungbalai",
-                    color = Color(0xFFDDDDDD),
+                    text = uiState.userLocation,
+                    color = MaterialTheme.colorScheme.outline,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -93,7 +112,7 @@ fun HomeScreenContent(
             // Banners positioned to overlap the header
             Column(
                 modifier = Modifier
-                    .padding(top = spacing.huge * 3) // Approx 192dp
+                    .padding(top = 200.dp) // Adjusted to overlap 280dp header
                     .fillMaxWidth()
             ) {
                 BannerCarousel(banners = uiState.banners)
@@ -138,7 +157,7 @@ fun HomeScreenContent(
                         description = product.description,
                         price = "₹ ${product.price}",
                         imageUrl = product.imageUrl,
-                        isFavourite = false, // TODO: state
+                        isFavourite = false,
                         onAddToCart = { /* TODO */ },
                         onFavouriteToggle = { /* TODO */ },
                         modifier = Modifier.fillMaxWidth()
