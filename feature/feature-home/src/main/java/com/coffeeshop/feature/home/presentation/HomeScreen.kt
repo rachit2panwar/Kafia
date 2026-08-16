@@ -5,26 +5,23 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.coffeeshop.core.ui.components.card.ProductCard
+import com.coffeeshop.core.ui.components.card.ProductCardSkeleton
+import com.coffeeshop.core.ui.components.input.SearchBar
+import com.coffeeshop.core.ui.theme.spacing
+import com.coffeeshop.core.ui.preview.PreviewWrapper
 import com.coffeeshop.feature.home.presentation.components.BannerCarousel
 import com.coffeeshop.feature.home.presentation.components.CategoryFilterRow
-import com.coffeeshop.feature.home.presentation.components.ProductCard
-
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.text.font.FontWeight
-import com.coffeeshop.core.ui.theme.CoffeeBrown
-import com.coffeeshop.core.ui.theme.SearchBarBg
+import android.content.res.Configuration
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HomeScreen(
@@ -35,7 +32,9 @@ fun HomeScreen(
     HomeScreenContent(
         uiState = uiState,
         onProductClick = onProductClick,
-        onCategorySelected = { viewModel.onEvent(HomeUiEvent.CategorySelected(it)) }
+        onCategorySelected = { viewModel.onEvent(HomeUiEvent.CategorySelected(it)) },
+        onSearchQueryChange = { /* viewModel.onSearch(it) */ },
+        onSearchSubmit = { /* viewModel.onSearchSubmit() */ }
     )
 }
 
@@ -43,26 +42,30 @@ fun HomeScreen(
 fun HomeScreenContent(
     uiState: HomeUiState,
     onProductClick: (String) -> Unit,
-    onCategorySelected: (String) -> Unit
+    onCategorySelected: (String) -> Unit,
+    onSearchQueryChange: (String) -> Unit,
+    onSearchSubmit: () -> Unit
 ) {
+    val spacing = MaterialTheme.spacing
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF9F9F9))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Box {
             // Header with Location & Search
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(280.dp)
+                    .height(spacing.huge * 4) // Approx 256dp
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(Color(0xFF131313), Color(0xFF313131))
                         )
                     )
                     .statusBarsPadding()
-                    .padding(horizontal = 30.dp, vertical = 20.dp)
+                    .padding(horizontal = spacing.xl, vertical = spacing.xl)
             ) {
                 Text(
                     text = "Location",
@@ -76,64 +79,27 @@ fun HomeScreenContent(
                     fontWeight = FontWeight.SemiBold
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(spacing.xl))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TextField(
-                        value = "",
-                        onValueChange = {},
-                        placeholder = { Text("Search coffee", color = Color(0xFF989898)) },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Search,
-                                contentDescription = null,
-                                tint = Color.White
-                            )
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(52.dp),
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = SearchBarBg,
-                            focusedContainerColor = SearchBarBg,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent
-                        ),
-                        shape = RoundedCornerShape(16.dp)
-                    )
-                    
-                    Spacer(modifier = Modifier.width(12.dp))
-                    
-                    Surface(
-                        modifier = Modifier.size(52.dp),
-                        color = CoffeeBrown,
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.List,
-                                contentDescription = "Filter",
-                                tint = Color.White
-                            )
-                        }
-                    }
-                }
+                SearchBar(
+                    query = "",
+                    onQueryChange = onSearchQueryChange,
+                    onSearchSubmit = onSearchSubmit,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
 
             // Banners positioned to overlap the header
             Column(
                 modifier = Modifier
-                    .padding(top = 210.dp)
+                    .padding(top = spacing.huge * 3) // Approx 192dp
                     .fillMaxWidth()
             ) {
                 BannerCarousel(banners = uiState.banners)
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(spacing.xl))
 
         // Categories
         CategoryFilterRow(
@@ -142,29 +108,70 @@ fun HomeScreenContent(
             onCategorySelected = onCategorySelected
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(spacing.lg))
 
         // Products Grid
         if (uiState.isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(horizontal = spacing.xl, vertical = spacing.lg),
+                horizontalArrangement = Arrangement.spacedBy(spacing.lg),
+                verticalArrangement = Arrangement.spacedBy(spacing.lg),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(4) {
+                    ProductCardSkeleton()
+                }
             }
         } else {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(horizontal = 30.dp, vertical = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(horizontal = spacing.xl, vertical = spacing.lg),
+                horizontalArrangement = Arrangement.spacedBy(spacing.lg),
+                verticalArrangement = Arrangement.spacedBy(spacing.lg),
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(uiState.products) { product ->
                     ProductCard(
-                        product = product,
-                        onClick = { onProductClick(product.id) },
+                        name = product.name,
+                        description = product.description,
+                        price = "₹ ${product.price}",
+                        imageUrl = product.imageUrl,
+                        isFavourite = false, // TODO: state
+                        onAddToCart = { /* TODO */ },
+                        onFavouriteToggle = { /* TODO */ },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
         }
+    }
+}
+
+@Preview(
+    name = "Light",
+    showBackground = true,
+    backgroundColor = 0xFFFFF8F2
+)
+@Preview(
+    name = "Dark",
+    showBackground = true,
+    backgroundColor = 0xFF120C05,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun HomeScreenPreview() {
+    PreviewWrapper {
+        HomeScreenContent(
+            uiState = HomeUiState(
+                isLoading = false,
+                banners = emptyList(),
+                products = emptyList()
+            ),
+            onProductClick = {},
+            onCategorySelected = {},
+            onSearchQueryChange = {},
+            onSearchSubmit = {}
+        )
     }
 }

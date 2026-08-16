@@ -3,11 +3,7 @@ package com.coffeeshop.feature.cart.presentation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocationOn
@@ -16,16 +12,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import com.coffeeshop.core.ui.theme.CoffeeBrown
+import com.coffeeshop.core.ui.components.button.CoffeeButton
+import com.coffeeshop.core.ui.components.image.CoffeeAsyncImage
+import com.coffeeshop.core.ui.components.topbar.CoffeeTopBar
+import com.coffeeshop.core.ui.theme.spacing
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
     onNavigateBack: () -> Unit,
@@ -33,51 +29,49 @@ fun CartScreen(
     viewModel: CartViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val spacing = MaterialTheme.spacing
 
     Scaffold(
         modifier = Modifier.statusBarsPadding(),
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Order", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
+            CoffeeTopBar(
+                title = "Order",
+                onNavigateBack = onNavigateBack
             )
         },
         bottomBar = {
             Surface(
-                shadowElevation = 8.dp,
-                color = Color.White
+                shadowElevation = spacing.sm,
+                color = MaterialTheme.colorScheme.surface
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(spacing.lg)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.LocationOn, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Icon(
+                                imageVector = Icons.Default.LocationOn, 
+                                contentDescription = null, 
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(modifier = Modifier.width(spacing.sm))
                             Text(text = "Cash/Wallet", style = MaterialTheme.typography.bodyMedium)
                         }
                         Text(
-                            text = "$ 5.53", 
+                            text = "₹ 5.53", 
                             style = MaterialTheme.typography.titleMedium, 
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(
+                    Spacer(modifier = Modifier.height(spacing.lg))
+                    CoffeeButton(
+                        text = "Order",
                         onClick = onOrderSuccess,
-                        modifier = Modifier.fillMaxWidth().height(56.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = CoffeeBrown)
-                    ) {
-                        Text("Order", fontWeight = FontWeight.SemiBold)
-                    }
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
         }
@@ -86,22 +80,40 @@ fun CartScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(horizontal = spacing.lg),
+            verticalArrangement = Arrangement.spacedBy(spacing.lg)
         ) {
             item {
                 Column {
-                    Text(text = "Delivery Address", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = uiState.address, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
-                    Text(text = "Kpg. Sutoyo No. 620, Bilzen, Tanjungbalai.", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Delivery Address", 
+                        style = MaterialTheme.typography.titleMedium, 
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(spacing.sm))
+                    Text(
+                        text = uiState.address, 
+                        style = MaterialTheme.typography.bodyLarge, 
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = "Kpg. Sutoyo No. 620, Bilzen, Tanjungbalai.", 
+                        style = MaterialTheme.typography.bodySmall, 
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(spacing.sm))
                     Row {
-                        OutlinedButton(onClick = { /* Edit */ }, shape = RoundedCornerShape(12.dp)) {
+                        OutlinedButton(
+                            onClick = { /* Edit */ }, 
+                            shape = MaterialTheme.shapes.medium
+                        ) {
                             Text("Edit Address")
                         }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        OutlinedButton(onClick = { /* Add Note */ }, shape = RoundedCornerShape(12.dp)) {
+                        Spacer(modifier = Modifier.width(spacing.sm))
+                        OutlinedButton(
+                            onClick = { /* Add Note */ }, 
+                            shape = MaterialTheme.shapes.medium
+                        ) {
                             Text("Add Note")
                         }
                     }
@@ -109,7 +121,7 @@ fun CartScreen(
             }
 
             item {
-                HorizontalDivider()
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
             }
 
             items(uiState.cartItems) { item ->
@@ -118,18 +130,22 @@ fun CartScreen(
 
             item {
                 Surface(
-                    color = Color.White,
-                    shape = RoundedCornerShape(16.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Color.LightGray)
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = MaterialTheme.shapes.large,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        modifier = Modifier.fillMaxWidth().padding(spacing.lg),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.LocationOn, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Icon(
+                                imageVector = Icons.Default.LocationOn, 
+                                contentDescription = null, 
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            Spacer(modifier = Modifier.width(spacing.sm))
                             Text(text = "1 Discount is Applied", fontWeight = FontWeight.Bold)
                         }
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
@@ -139,10 +155,14 @@ fun CartScreen(
 
             item {
                 Column {
-                    Text(text = "Payment Summary", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(12.dp))
-                    SummaryRow("Price", "$ 4.53")
-                    SummaryRow("Delivery Fee", "$ 1.0", isDiscounted = true)
+                    Text(
+                        text = "Payment Summary", 
+                        style = MaterialTheme.typography.titleMedium, 
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(spacing.md))
+                    SummaryRow("Price", "₹ 4.53")
+                    SummaryRow("Delivery Fee", "₹ 1.0", isDiscounted = true)
                 }
             }
         }
@@ -150,27 +170,40 @@ fun CartScreen(
 }
 
 @Composable
-fun CartItemRow(item: com.coffeeshop.feature.cart.presentation.CartItem) {
+fun CartItemRow(item: CartItem) {
+    val spacing = MaterialTheme.spacing
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
-            model = item.product.imageUrl,
+        CoffeeAsyncImage(
+            imageUrl = item.product.imageUrl,
             contentDescription = null,
-            modifier = Modifier.size(54.dp).clip(RoundedCornerShape(12.dp)),
+            modifier = Modifier.size(54.dp).clip(MaterialTheme.shapes.medium),
             contentScale = ContentScale.Crop
         )
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(spacing.md))
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = item.product.name, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
-            Text(text = item.product.category, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+            Text(
+                text = item.product.name, 
+                style = MaterialTheme.typography.bodyLarge, 
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = item.product.category, 
+                style = MaterialTheme.typography.bodySmall, 
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { /* - */ }) {
                 Text("-", style = MaterialTheme.typography.titleLarge)
             }
-            Text(text = item.quantity.toString(), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+            Text(
+                text = item.quantity.toString(), 
+                style = MaterialTheme.typography.bodyLarge, 
+                fontWeight = FontWeight.Bold
+            )
             IconButton(onClick = { /* + */ }) {
                 Icon(Icons.Default.Add, contentDescription = null)
             }

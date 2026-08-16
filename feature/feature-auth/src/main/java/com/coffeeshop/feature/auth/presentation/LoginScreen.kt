@@ -5,10 +5,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.coffeeshop.core.ui.components.button.CoffeeButton
+import com.coffeeshop.core.ui.components.input.CoffeeTextField
+import com.coffeeshop.core.ui.theme.spacing
 
 @Composable
 fun LoginScreen(
@@ -17,6 +21,7 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val spacing = MaterialTheme.spacing
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -30,58 +35,54 @@ fun LoginScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .statusBarsPadding()
-                .padding(16.dp),
+                .padding(spacing.xl),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Text(
                 text = "Welcome to Kafia",
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.primary
             )
             
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(spacing.xxl))
 
-            OutlinedTextField(
+            CoffeeTextField(
                 value = uiState.email,
                 onValueChange = { viewModel.onIntent(LoginIntent.EmailChanged(it)) },
-                label = { Text("Email") },
+                label = "Email",
+                keyboardType = KeyboardType.Email,
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(spacing.lg))
 
-            OutlinedTextField(
+            CoffeeTextField(
                 value = uiState.password,
                 onValueChange = { viewModel.onIntent(LoginIntent.PasswordChanged(it)) },
-                label = { Text("Password") },
+                label = "Password",
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done,
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(spacing.xxl))
 
-            Button(
+            CoffeeButton(
+                text = "Login",
                 onClick = { viewModel.onIntent(LoginIntent.LoginClicked) },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !uiState.isLoading
-            ) {
-                if (uiState.isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text("Login")
-                }
-            }
+                isLoading = uiState.isLoading,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }

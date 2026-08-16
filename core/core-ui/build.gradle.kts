@@ -36,12 +36,13 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(platform(libs.compose.bom))
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
+    val composeBom = platform(libs.compose.bom)
+    implementation(composeBom)
+    api(libs.compose.ui)                     // api so consumers get it transitively
+    api(libs.compose.material3)
+    api(libs.compose.ui.tooling.preview)
+    debugImplementation(libs.compose.ui.tooling)
     implementation(libs.compose.ui.text.google.fonts)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.core.ktx)
 }
