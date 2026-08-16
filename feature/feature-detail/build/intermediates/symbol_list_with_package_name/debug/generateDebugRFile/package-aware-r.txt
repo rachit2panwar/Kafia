@@ -1,1 +1,0 @@
-com.coffeeshop.feature.detail
