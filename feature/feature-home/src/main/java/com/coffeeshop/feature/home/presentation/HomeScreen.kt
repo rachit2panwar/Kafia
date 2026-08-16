@@ -32,7 +32,19 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    HomeScreenContent(
+        uiState = uiState,
+        onProductClick = onProductClick,
+        onCategorySelected = { viewModel.onEvent(HomeUiEvent.CategorySelected(it)) }
+    )
+}
 
+@Composable
+fun HomeScreenContent(
+    uiState: HomeUiState,
+    onProductClick: (String) -> Unit,
+    onCategorySelected: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -127,7 +139,7 @@ fun HomeScreen(
         CategoryFilterRow(
             categories = uiState.categories,
             selectedCategory = uiState.selectedCategory,
-            onCategorySelected = { viewModel.onEvent(HomeUiEvent.CategorySelected(it)) }
+            onCategorySelected = onCategorySelected
         )
 
         Spacer(modifier = Modifier.height(16.dp))
