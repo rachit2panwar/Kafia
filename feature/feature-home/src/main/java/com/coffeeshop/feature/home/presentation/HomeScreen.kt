@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.coffeeshop.core.ui.components.card.ProductCard
@@ -54,18 +55,18 @@ fun HomeScreenContent(
             .background(MaterialTheme.colorScheme.background)
     ) {
         Box {
-            // Header with Location & Search
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(spacing.huge * 4) // Approx 256dp
+                    .height(280.dp)
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(Color(0xFF131313), Color(0xFF313131))
                         )
                     )
                     .statusBarsPadding()
-                    .padding(horizontal = spacing.xl, vertical = spacing.xl)
+                    .padding(horizontal = spacing.xl)
+                    .padding(top = spacing.md, bottom = spacing.xl)
             ) {
                 Text(
                     text = "Location",
