@@ -26,6 +26,7 @@ rootProject.name = "Kafia"
 include(":app")
 
 // Core modules
+include(":core:core-navigation")
 include(":core:core-ui")
 include(":core:core-network")
 include(":core:core-data")

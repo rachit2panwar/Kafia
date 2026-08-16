@@ -26,7 +26,8 @@ import com.coffeeshop.core.domain.model.Product
 @Composable
 fun ProductDetailScreen(
     productId: String,
-    onBack: () -> Unit,
+    onNavigateBack: () -> Unit,
+    onAddToCartSuccess: () -> Unit,
     viewModel: ProductDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -60,7 +61,10 @@ fun ProductDetailScreen(
                         }
                         
                         Button(
-                            onClick = { /* Buy Now */ },
+                            onClick = { 
+                                // viewModel.addToCart(product) // Assuming this exists or will be added
+                                onAddToCartSuccess()
+                            },
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(start = 24.dp)
@@ -85,7 +89,7 @@ fun ProductDetailScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                IconButton(onClick = onBack) {
+                IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }
                 Text(text = "Detail", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)

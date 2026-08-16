@@ -3,7 +3,9 @@ package com.coffeeshop.feature.cart.presentation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -21,10 +23,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.coffeeshop.core.ui.theme.CoffeeBrown
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
+    onNavigateBack: () -> Unit,
+    onOrderSuccess: () -> Unit,
     viewModel: CartViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -35,7 +40,7 @@ fun CartScreen(
             CenterAlignedTopAppBar(
                 title = { Text("Order", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
-                    IconButton(onClick = { /* onBack */ }) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
@@ -66,11 +71,12 @@ fun CartScreen(
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = { /* Order */ },
+                        onClick = onOrderSuccess,
                         modifier = Modifier.fillMaxWidth().height(56.dp),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = CoffeeBrown)
                     ) {
-                        Text("Order")
+                        Text("Order", fontWeight = FontWeight.SemiBold)
                     }
                 }
             }
@@ -144,7 +150,7 @@ fun CartScreen(
 }
 
 @Composable
-fun CartItemRow(item: CartItem) {
+fun CartItemRow(item: com.coffeeshop.feature.cart.presentation.CartItem) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically

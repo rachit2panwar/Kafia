@@ -10,6 +10,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun ProfileScreen(
+    onNavigateToOrders: () -> Unit,
+    onNavigateToFavourites: () -> Unit,
     onLogout: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
@@ -22,10 +24,31 @@ fun ProfileScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = "Profile Screen", style = MaterialTheme.typography.headlineMedium)
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        Button(
+            onClick = onNavigateToOrders,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("My Orders")
+        }
+        
+        Spacer(modifier = Modifier.height(8.dp))
+        
+        Button(
+            onClick = onNavigateToFavourites,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Favourites")
+        }
+        
         Spacer(modifier = Modifier.height(32.dp))
+        
         Button(
             onClick = { viewModel.logout(onLogout) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
         ) {
             Text("Logout")
         }

@@ -10,7 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.statusBarsPadding
 
 @Composable
-fun FavouritesScreen() {
+fun FavouritesScreen(
+    onProductClick: (String) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()

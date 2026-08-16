@@ -29,6 +29,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:core-navigation"))
     implementation(project(":core:core-domain"))
     implementation(project(":core:core-ui"))
     implementation(project(":core:core-network"))

@@ -10,7 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.statusBarsPadding
 
 @Composable
-fun OrdersScreen() {
+fun OrdersScreen(
+    onOrderClick: (String) -> Unit,
+    onNavigateBack: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()

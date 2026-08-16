@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.coffeeshop.core.domain.util.NetworkResult
 import com.coffeeshop.feature.auth.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -20,16 +23,19 @@ class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    fun onEvent(event: LoginUiEvent) {
-        when (event) {
-            is LoginUiEvent.EmailChanged -> {
-                _uiState.update { it.copy(email = event.email) }
+    private val _uiEvent = MutableSharedFlow<LoginUiEvent>()
+    val uiEvent: SharedFlow<LoginUiEvent> = _uiEvent.asSharedFlow()
+
+    fun onIntent(intent: LoginIntent) {
+        when (intent) {
+            is LoginIntent.EmailChanged -> {
+                _uiState.update { it.copy(email = intent.email) }
             }
-            is LoginUiEvent.PasswordChanged -> {
-                _uiState.update { it.copy(password = event.password) }
+            is LoginIntent.PasswordChanged -> {
+                _uiState.update { it.copy(password = intent.password) }
             }
-            LoginUiEvent.LoginClicked -> login()
-            LoginUiEvent.GoogleLoginClicked -> loginWithGoogle()
+            LoginIntent.LoginClicked -> login()
+            LoginIntent.GoogleLoginClicked -> loginWithGoogle()
         }
     }
 
@@ -38,7 +44,9 @@ class LoginViewModel @Inject constructor(
         val password = _uiState.value.password
 
         if (email.isBlank() || password.isBlank()) {
-            _uiState.update { it.copy(error = "Please fill all fields") }
+            viewModelScope.launch {
+                _uiEvent.emit(LoginUiEvent.ShowError("Please fill all fields"))
+            }
             return
         }
 
@@ -46,10 +54,12 @@ class LoginViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, error = null) }
             when (val result = loginUseCase(email, password)) {
                 is NetworkResult.Success -> {
-                    _uiState.update { it.copy(isLoading = false, isLoginSuccess = true) }
+                    _uiState.update { it.copy(isLoading = false) }
+                    _uiEvent.emit(LoginUiEvent.NavigateToHome)
                 }
                 is NetworkResult.Error -> {
-                    _uiState.update { it.copy(isLoading = false, error = result.message) }
+                    _uiState.update { it.copy(isLoading = false) }
+                    _uiEvent.emit(LoginUiEvent.ShowError(result.message ?: "Unknown error"))
                 }
                 NetworkResult.Loading -> {
                     _uiState.update { it.copy(isLoading = true) }
