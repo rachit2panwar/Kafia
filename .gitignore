@@ -16,7 +16,8 @@ build/
 .kotlin/
 .mcp.json
 GEMINI.md
-gemini_for_kafia/kafia_project.md
+gemini_for_kafia/
+navigation_architecture.md
 
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 graft/
