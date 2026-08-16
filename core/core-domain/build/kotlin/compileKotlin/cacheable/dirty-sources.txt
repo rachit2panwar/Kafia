@@ -1,0 +1,6 @@
+/Users/rachitpanwar/AndroidStudioProjects/Kafia/core/core-domain/src/main/java/com/coffeeshop/core/domain/model/Banner.kt
+/Users/rachitpanwar/AndroidStudioProjects/Kafia/core/core-domain/src/main/java/com/coffeeshop/core/domain/model/Product.kt
+/Users/rachitpanwar/AndroidStudioProjects/Kafia/core/core-domain/src/main/java/com/coffeeshop/core/domain/model/User.kt
+/Users/rachitpanwar/AndroidStudioProjects/Kafia/core/core-domain/src/main/java/com/coffeeshop/core/domain/model/DeliveryZone.kt
+/Users/rachitpanwar/AndroidStudioProjects/Kafia/core/core-domain/src/main/java/com/coffeeshop/core/domain/model/Location.kt
+/Users/rachitpanwar/AndroidStudioProjects/Kafia/core/core-domain/src/main/java/com/coffeeshop/core/domain/model/Order.kt

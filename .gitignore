@@ -1,0 +1,21 @@
+*.iml
+.gradle
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# AI and tool-specific files
+.gemini/
+.claude/
+.artifacts/
+.kotlin/
+.mcp.json
+GEMINI.md
+kafia_project.md
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+graft/

@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/rachitpanwar/AndroidStudioProjects/Kafia/feature/feature-home/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11955995990700385480.xml:2:13-83
+INJECTED from /Users/rachitpanwar/AndroidStudioProjects/Kafia/feature/feature-home/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11955995990700385480.xml:2:13-83
+	package
+		INJECTED from /Users/rachitpanwar/AndroidStudioProjects/Kafia/feature/feature-home/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11955995990700385480.xml
+	xmlns:android
+		ADDED from /Users/rachitpanwar/AndroidStudioProjects/Kafia/feature/feature-home/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11955995990700385480.xml:2:23-81
+uses-sdk
+INJECTED from /Users/rachitpanwar/AndroidStudioProjects/Kafia/feature/feature-home/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11955995990700385480.xml reason: use-sdk injection requested
+INJECTED from /Users/rachitpanwar/AndroidStudioProjects/Kafia/feature/feature-home/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11955995990700385480.xml
+INJECTED from /Users/rachitpanwar/AndroidStudioProjects/Kafia/feature/feature-home/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11955995990700385480.xml
+	android:targetSdkVersion
+		INJECTED from /Users/rachitpanwar/AndroidStudioProjects/Kafia/feature/feature-home/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11955995990700385480.xml
+	android:minSdkVersion
+		INJECTED from /Users/rachitpanwar/AndroidStudioProjects/Kafia/feature/feature-home/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11955995990700385480.xml
